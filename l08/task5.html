@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>PW - laborator 8: Javascript</title>
+	<script type="text/javascript">
+	// add click handler method
+	var add_the_handlers = function (nodes) {
+		var i;
+		for (i = 0; i < nodes.length; i += 1) {
+			nodes[i].onclick = function (e) {
+				alert(i);
+			}
+		}
+	};
+	
+	// check if the page is loaded
+	window.onload = function () {
+		// build an array of DOM elements
+		var clickableNodes = [document.getElementById('first'), document.getElementById('second'), document.getElementById('third')];
+		console.log(clickableNodes);
+		
+		add_the_handlers(clickableNodes);
+	}
+	
+	</script>
+</head>
+
+<body>
+	<button id="first">First button</button>
+	<button id="second">Second button</button>
+	<button id="third">Third button</button>
+</body>
+</html>

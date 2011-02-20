@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>PW - laborator 8: Javascript</title>
+	<script type="text/javascript">
+	// inheritance patterns
+	var myObject = {
+		value: 0,
+		increment: function (inc) {
+			this.value += typeof inc === 'number' ? inc : 1;
+		}
+	};
+	 
+	myObject.increment();
+	console.log(myObject.value);    // 1
+	 
+	myObject.increment(2);
+	console.log(myObject.value);    // 3
+	 
+	myObject.double = function () {
+		var wrongHelper = function () {
+			this.value = this.value + this.value;
+		};
+	 
+		wrongHelper();    // Invoke helper as a function.
+	};
+	 
+	// Invoke double as a method.
+	myObject.double();
+	console.log(myObject.value);    // 3
+	</script>
+</head>
+
+<body>
+
+</body>
+</html>
