@@ -1,0 +1,21 @@
+body {
+	font-family: Tahoma;
+}
+
+.formStyle {
+	background-color:#EEEEEE;
+}
+
+.containerStyle{
+	width:600px;
+	display:block;
+}
+.inputStyle {
+	width:300px;
+}
+.comboStyle {
+	width:300px;
+}
+.submitStyle {
+	width:300px;
+}
