@@ -12,7 +12,6 @@
 	}
 	// ================================================================ //
 	module('Preliminary Checks');
-	
 	test('Check if required functions are present', function () {
 		equals(typeof(createFormFactory), 'function', 'createFormFactory function present');
 		var formFactory = createFormFactory();
@@ -77,7 +76,7 @@
 		equals(form_input.value, 'value_1', 'Value attribute created successfully');
 		equals(form_input.type, 'text', 'Type attribute created successfully');		
 		equals(form_input.id, 'test_input', 'Id attribute created successfully');
-		// test if exception is thrown when required fields are not present
+		// TODO: test if exception is thrown when required fields are not present?
 	});
 	
 	test('Combo element checks', function () {
@@ -87,10 +86,10 @@
 		var form_combo = formFactory.createCombo(test_combo);
 		equals(form_combo.nodeType, 1, 'Combo has correct nodeType');
 		equals(form_combo.getAttribute('name'), 'myCombo', 'Name attribute created successfully');
-		equals(form_combo.value, 'cv_1', 'Value created successfully');
 		equals(form_combo.id, 'myCombo', 'Id attribute created successfully');
 		equals(form_combo.childNodes.length, test_combo.value.length, 'Correct number of values');
 		for (i = 0; i < form_combo.childNodes.length; i++) {
+			equals(form_combo.childNodes[i].tagName.toLowerCase(), 'option', 'Option element was created');
 			equals(form_combo.childNodes[i].innerHTML, test_combo.value[i], 'Value was correctly inserted');
 		}		
 	});
@@ -124,9 +123,9 @@
 			method: 'GET',
 			action: 'script.php',
 			elements: [
-			   {name:'name_1', type:'text', value:'value_1', description:'Description text:'},
-			   {name:'myCombo', id: 'myCombo',   type:'combo', value: ['cv_1','cv_2','cv_3'], description:'Description text:'},
-			   {name:'mySubmit', id:'mySubmit', type:'submit', value:'trimite', description:'Description text:'}
+			   {name:'name_1', type:'text', value:'value_1', description: 'Input label'},
+			   {name:'myCombo', id: 'myCombo',   type:'combo', value: ['cv_1','cv_2','cv_3'], description: 'Combo label'},
+			   {name:'mySubmit', id:'mySubmit', type:'submit', value:'trimite', description: 'Submit label'}
 			]
 		};
 		
@@ -143,7 +142,11 @@
 		equals($(form).find('input[type=text]').attr('class'), form_factory_styles.inputClass, 'Input class was correctly added.');
 		equals($(form).find('select').attr('class'), form_factory_styles.comboClass, 'Combo class was correctly added.');
 		equals($(form).find('input[type=submit]').attr('class'), form_factory_styles.submitClass, 'Submit class was correctly added.');
-		
+		console.log($(form));
+		equals($(form).find('div > label').length, 3, 'Labels were inserted correctly for every element.');
+		equals($(form).find('div > label').get(0).innerHTML, 'Input label', 'Input label was inserted correctly');
+		equals($(form).find('div > label').get(1).innerHTML, 'Combo label', 'Combo label was inserted correctly');
+		equals($(form).find('div > label').get(2).innerHTML, 'Submit label', 'Submit label was inserted correctly');
 		equals(form.name, form_info.name, 'Form has correct name');
 	});
 	
