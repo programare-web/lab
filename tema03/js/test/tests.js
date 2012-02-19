@@ -1,4 +1,38 @@
 (function allTests($) {
+    /** location of the AJAX datasource */
+    var AJAX_SCRIPT_URL = 'ajaxSource.php';
+
+
+    // hacking all HTMLElements' prototype to enable event checking
+    // Kids, don't try this at home! Or better yet, anywhere!
+    if (typeof HTMLElement === 'function') {
+        HTMLElement.prototype.registeredEvents = [];
+        HTMLElement.prototype.decoratedAddEventListener = HTMLElement.prototype.addEventListener;
+        HTMLElement.prototype.addEventListener = function (eventType, action, capturingPhase) {
+            this.registeredEvents.push({ type : eventType, action : action, phase : capturingPhase});
+            this.decoratedAddEventListener(eventType, action, capturingPhase);
+        }
+    } else {
+        throw new Error('Browser does not implement the HTMLElement interface');
+    }
+
+    var eventExists = function (el, eventType) {
+        var i;
+        if (!el instanceof HTMLElement) {
+            throw new Error("Event check on non HTML element");
+        } 
+
+        // checking for events added via addEventListener
+        for (i = el.registeredEvents.length - 1; i >= 0; i--) {
+            if (el.registeredEvents[i].type === eventType) {
+                return true;
+            }
+        }
+        
+        // if we got here, need to check if the event was added via the attribute
+        return !!el['on'+eventType];
+    };
+
 	function initFormFactory() {
 		var styles = {
 				formClass:     'formStyle',
@@ -10,8 +44,8 @@
 		}, formFactory = createFormFactory(styles);
 		return formFactory;
 	}
-	// ================================================================ //
-	module('Preliminary Checks');
+	
+    module('Preliminary Checks');
 	test('Check if required functions are present', function () {
 		equals(typeof(createFormFactory), 'function', 'createFormFactory function present');
 		var formFactory = createFormFactory();
@@ -23,14 +57,13 @@
 	});
 	
 	
-	// ================================================================ //
 	module('Functional checks');
 	
 	test('Check for different types of form elements', function () {
 		var formFactory = initFormFactory();
 		
 		// test createInput
-		var test_input = {name:'some_name', type:'text', value:'value_1', description:'Description text:'};
+		var test_input = { name:'some_name', type:'text', value:'value_1', description:'Description text:' };
 		var form_input = formFactory.createInput(test_input);
 		ok(form_input instanceof HTMLElement, 'createInput returns a DOM element');
 		equals(form_input.nodeType, 1, 'Input has correct nodeType');
@@ -150,13 +183,11 @@
 		equals(form.name, form_info.name, 'Form has correct name');
 	});
 	
-	
-	
-	asyncTest('AJAX checks', function () {
+	asyncTest('AJAX Tests', function () {
 		var formFactory = initFormFactory();
 		// ajax metadata
-		var ajax_info = { url: 'ajaxSource.php', event: 'onchange', target: 'myCombo' };
-		var ajax_info_2 = { url:'ajaxSource.php', event: 'onclick',	target: 'mySubmit' };
+		var ajax_info = { url: AJAX_SCRIPT_URL, event: 'change', target: 'myCombo' };
+		var ajax_info_2 = { url: AJAX_SCRIPT_URL, event: 'click',	target: 'mySubmit' };
 		// form elements
 		var test_ajax = { name: 'inputValue', id: 'inputValue', type: 'text', ajax: ajax_info, description: 'Description text:' };
 		var test_ajax_2 = {	name: 'inputValue2', id: 'inputValue2', type: 'text', ajax: ajax_info_2, description: 'Description text:' };
@@ -166,25 +197,20 @@
 		var form_info = { name: 'formName', method: 'GET', action: 'script.php', elements: [ test_ajax, test_combo, test_ajax_2, test_submit ] };
 		var form = formFactory.createForm(form_info);
 		$("#test-container")[0].appendChild(form);
+	
+        ok(eventExists($('#inputValue').get(0), ajax_info.event), 'Event handler was attached correctly');
+        ok(eventExists($('#inputValue2').get(0), ajax_info_2.event), 'Event handler was attached correctly');
 		
-		notEqual($("#inputValue").attr(ajax_info.event), undefined, 'Event handler was attached correctly');
-		
-		// trigger event
-		document.getElementById("inputValue").value = "test";
-		document.getElementById("inputValue").onchange();
-		// trigger event again
-		document.getElementById("inputValue").onchange();
-		
-		// trigger other event 
-		document.getElementById("inputValue2").value = "cv_1";
-		document.getElementById("inputValue2").onclick();
+		// change value and trigger event twice
+		$("#inputValue").attr('value', 'test').trigger('change').trigger('change');
+		$("#inputValue2").attr('value', 'cv_1').trigger('click');
 		
 		// wait 1s for the ajax calls to complete
 	    setTimeout(function() {
 	    	equals($('#myCombo option').length, 3);
 			
 	    	// test population of the dropdown
-	    	$.get('ajaxSource.php', function (data) {
+	    	$.get(AJAX_SCRIPT_URL, function (data) {
 	    		var i, pair;
 	    		var values = data.split('&');
 				for (i = 0; i < values.length; i++) {
