@@ -1,6 +1,7 @@
 (function allTests($) {
+    "use strict";
     /** location of the AJAX datasource */
-    var AJAX_SCRIPT_URL = 'ajaxSource.php';
+    var AJAX_SCRIPT_URL = 'ajax.php';
 
 
     // hacking all HTMLElements' prototype to enable event checking
@@ -107,7 +108,7 @@
         $.each(attrs, function (idx, attr) {
             if (typeof config[attr] === 'string') {
                 // assert that the configuration attribute is mirrored in the element
-                ok(el.getAttribute(attr) === config[attr], 'Attribute ' + attr + ' was correctly attached.');
+                ok((el.getAttribute(attr) || el[attr]) === config[attr], 'Attribute ' + attr + ' was correctly attached.');
             }
         });
     };
@@ -129,8 +130,8 @@
         var formFactory = createFormFactory(getConfigObject('factory'));
         equals(typeof(formFactory.createForm), 'function', 'createForm function present in factory object');
         equals(typeof(formFactory.createInput), 'function', 'createInput function present in factory object');
-        equals(typeof(formFactory.createCombo), 'function', 'createCombo function present in factory object');
-        equals(typeof(formFactory.createSubmit), 'function', 'createCombo function present in factory object');
+        equals(typeof(formFactory.createSelect), 'function', 'createSelect function present in factory object');
+        equals(typeof(formFactory.createSubmit), 'function', 'createSubmit function present in factory object');
     });
     
     
@@ -143,9 +144,9 @@
         ok(input instanceof HTMLElement, 'createInput returns a DOM element');
         equals(input.nodeType, 1, 'Input has correct nodeType');
         
-        // test createCombo
+        // test createSelect
         dropdown = formFactory.createSelect(getConfigObject('select'));
-        ok(combo instanceof HTMLElement, 'createCombo returns a DOM element');
+        ok(dropdown instanceof HTMLElement, 'createSelect returns a DOM element');
         
         // test createSubmit
         submit = formFactory.createSubmit(getConfigObject('submit'));
@@ -169,7 +170,7 @@
     
     test('Dropdown Element Checks', function () {
         var formFactory = createFormFactory(getConfigObject('factory')), config = getConfigObject('select'), select, i;
-        select = formFactory.createCombo(config);
+        select = formFactory.createSelect(config);
         checkCommon(select, config);
         equals(select.childNodes.length, config.value.length, 'Correct number of values');
         for (i = select.childNodes.length - 1; i >= 0; i--) {
@@ -246,7 +247,7 @@
                 for (i = 0; i < values.length; i++) {
                     pair = values[i].split('=');
                     equals(pair[0], $target.get(i).getAttribute('name'), 'Form name was inserted correctly via AJAX');
-                    equals(pair[1], $target.get(i).getAttribute('value'), 'Form value was inserted correctly via AJAX');
+                    equals(pair[1], $target.get(i).value, 'Form value was inserted correctly via AJAX');
                 }
             });
             
