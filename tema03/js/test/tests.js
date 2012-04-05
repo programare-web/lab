@@ -67,7 +67,8 @@
                 id : randomString(),
                 method : 'GET',
                 action : randomString() + '.php',
-                elements : [getConfigObject('input'), getConfigObject('dropdown'), getConfigObject('input'), getConfigObject('submit')]
+                elements : [getConfigObject('input'), getConfigObject('select'), 
+                            getConfigObject('input'), getConfigObject('submit')]
             }
         break;
         case 'factory':
@@ -82,7 +83,7 @@
                 },
                 container : {
                     type : randomValue(['div', 'p']),
-                    style : ['container', randomString()]
+                    styles : ['container', randomString()]
                 }
             }
         default:
@@ -115,7 +116,7 @@
 
     var checkStyles = function (el, styles) {
         if (typeof styles === 'string') {
-            ok($(el).hasClass(style), 'CSS class ' + style + 'was correctly attached to the element');
+            ok($(el).hasClass(styles), 'CSS class ' + styles + 'was correctly attached to the element');
         } else {
             // assumed array
             $.each(styles, function (idx, style) {
@@ -197,18 +198,21 @@
     
         checkCommon(form, formConfig, ['action', 'method']);
         equals(form.className, factoryConfig.styles.form);
-        equals(form.childNodes.length, 3, 'Form has correct number of child nodes');
+        equals(form.childNodes.length, formConfig.elements.length, 'Form has correct number of child nodes');
         for (i = 0; i < form.childNodes.length; i++) {
-            equals(form.childNodes[i].className, factoryConfig.container.style.join(' ')); // TODO: make this work in all cases
-            equals(form.childNodes[i].tagName.toLowerCase(), factoryConfig.container.type.toLowerCase());
+            equals(form.childNodes[i].className, factoryConfig.container.styles.join(' '), 
+                'Container styles added correctly'); // TODO: make this work in all cases
+            equals(form.childNodes[i].tagName.toLowerCase(), factoryConfig.container.type.toLowerCase(), 
+                'Container has a correct tag name');
         }
-        checkStyles($(form).find('input[type=text]').get(0), factoryConfig.styles.input);
+        checkStyles($(form).find('input[type=text]').get(0), factoryConfig.styles.input.text);
         checkStyles($(form).find('select').get(0), factoryConfig.styles.select);
-        checkStyles($(form).find('input[type=submit]').get(0), factoryConfig.styles.submit);
+        checkStyles($(form).find('input[type=submit]').get(0), factoryConfig.styles.input.submit);
         $labels = $(form).find(labelSelector);
         equals($labels.length, formConfig.elements.length, 'Labels were inserted correctly for every element.');
         $labels.each(function (index) {
-            equals($(this).html(), formConfig.elements[i].description, 'Label content was added correctly.');
+            var description = formConfig.elements[index].description;
+            equals($(this).html(), description ? description : "", 'Label content was added correctly.');
         });
         equals(form.getAttribute('name'), formConfig.name, 'Form has correct name');
     });
@@ -223,7 +227,7 @@
         
         formConfig.elements[0].ajax = ajaxConfig;
         formConfig.elements[2].ajax = ajaxConfig2;
-        form = formFactory.createForm(formConfig);
+        form = factory.createForm(formConfig);
 
         $("#test-container")[0].appendChild(form);
         $sourceEl1 = $('#' + formConfig.elements[0].id);    
@@ -232,27 +236,26 @@
         ok(eventExists($sourceEl2.get(0), ajaxConfig2.event), 'Event handler was attached correctly');
         
         // change value and trigger event twice
-        $sourceEl1.attr('value', 'test').trigger('change').trigger('change');
-        $sourceEl2.attr('value', 'cv_1').trigger('click');
+        $sourceEl1.attr('value', 'select').trigger('change').trigger('change');
+        $sourceEl2.attr('value', 'test').trigger('click');
         
         // wait 1s for the ajax calls to complete
         setTimeout(function() {
-            var $target = $('#' + ajaxConfig.target + ' option');
-            equals($target.length, 3);
+            var $target = $('#' + ajaxConfig.target);
+            equals($target.find('option').length, 3);
             
             // test population of the dropdown
             $.get(AJAX_SCRIPT_URL, function (data) {
-                var i, pair;
-                var values = data.split('&');
-                for (i = 0; i < values.length; i++) {
-                    pair = values[i].split('=');
-                    equals(pair[0], $target.get(i).getAttribute('name'), 'Form name was inserted correctly via AJAX');
-                    equals(pair[1], $target.get(i).value, 'Form value was inserted correctly via AJAX');
-                }
+                var elements = JSON.parse(data), i = 0; 
+                $.each(elements, function (key, value) {
+                    equals(key, $target.find('option').get(i).getAttribute('name'), 'Form name was inserted correctly via AJAX');
+                    equals(value, $target.find('option').get(i).value, 'Form value was inserted correctly via AJAX');
+                    i++;
+                });
             });
             
             // test value of the submit
-            $.get('ajaxSource.php?data=cv_1', function (data) {
+            $.get('ajax.php?data=test', function (data) {
                 equals(data, $('#' + ajaxConfig2.target).get(0).value, 'Submit value was updated');
             });
             start();

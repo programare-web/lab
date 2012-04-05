@@ -1,5 +1,5 @@
 <?php
-	$arr = array("cv_1" => "value_1", "cv_2" => "value_2", "cv_3" => "value_3");
+	$arr = array("test" => "output");
 	
 	if (isset($_GET['data']) && array_key_exists($_GET['data'], $arr)) {
 		echo json_encode(array('value' => $arr[$_GET['data']]));
