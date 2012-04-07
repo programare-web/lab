@@ -281,7 +281,8 @@
             
             // test value of the submit
             $.get('ajax.php?data=test', function (data) {
-                equals(data, $('#' + ajaxConfig2.target).get(0).value, 'Submit value was updated');
+                var resp = JSON.parse(data);
+                equals(resp.value, $('#' + ajaxConfig2.target).get(0).value, 'Submit value was updated');
             });
             start();
         }, 1000);
