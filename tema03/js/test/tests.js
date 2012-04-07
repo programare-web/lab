@@ -5,17 +5,24 @@
 
 
     // hacking all HTMLElements' prototype to enable event checking
-    // Kids, don't try this at home! Or better yet, anywhere!
-    if (typeof HTMLElement === 'function' || typeof HTMLElement === 'object') {
-        HTMLElement.prototype.registeredEvents = [];
-        HTMLElement.prototype.decoratedAddEventListener = HTMLElement.prototype.addEventListener;
-        HTMLElement.prototype.addEventListener = function (eventType, action, capturingPhase) {
-            this.registeredEvents.push({ type : eventType, action : action, phase : capturingPhase});
-            this.decoratedAddEventListener(eventType, action, capturingPhase);
-        }
-    } else {
-        throw new Error('Browser does not implement the HTMLElement interface');
+    var hook = function (eventType, action, capturingPhase) {
+        this.registeredEvents.push({ type : eventType, action : action, phase : capturingPhase});
+        this.decoratedAddEventListener(eventType, action, capturingPhase);
     }
+
+    
+    var interfaces = $.browser.mozilla ? [HTMLElement, HTMLInputElement, HTMLSelectElement] :
+        [HTMLElement];
+    // Kids, don't try this at home! Or better yet, anywhere!
+    $.each(interfaces, function (index, element) {
+        if (typeof element === 'function' || typeof element === 'object') {
+            element.prototype.registeredEvents = [];
+            element.prototype.decoratedAddEventListener = element.prototype.addEventListener;
+            element.prototype.addEventListener = hook;
+        } else {
+            throw new Error('Browser does not implement the HTMLElement interface');
+        }
+    });
 
     var eventExists = function (el, eventType) {
         var i;
@@ -239,7 +246,7 @@
         var factoryConfig = getConfigObject('factory'),
             factory = createFormFactory(factoryConfig),
             formConfig = getConfigObject('form'),
-            ajaxConfig = { url: AJAX_SCRIPT_URL, event: 'change', target: formConfig.elements[1].id },
+            ajaxConfig = { url: AJAX_SCRIPT_URL, event: 'click', target: formConfig.elements[1].id },
             ajaxConfig2 = { url: AJAX_SCRIPT_URL, event: 'click', target: formConfig.elements[3].id },
             form, $sourceEl1, $sourceEl2;
         
@@ -254,7 +261,7 @@
         ok(eventExists($sourceEl2.get(0), ajaxConfig2.event), 'Event handler was attached correctly');
         
         // change value and trigger event twice
-        $sourceEl1.attr('value', 'select').trigger('change').trigger('change');
+        $sourceEl1.attr('value', 'select').trigger('click');
         $sourceEl2.attr('value', 'test').trigger('click');
         
         // wait 1s for the ajax calls to complete
