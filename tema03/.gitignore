@@ -1,2 +1,3 @@
 index.html
-js/FormFactory.js
+js/form-factory-impl.dom.js
+js/form-factory-impl.jquery.js

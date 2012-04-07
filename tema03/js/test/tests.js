@@ -91,6 +91,21 @@
         }
     };
 
+    var extractLabels = function (config) {
+        var labels = [];
+        if (config.elements) {
+            $.each(config.elements, function (index, element) {
+                labels = labels.concat(extractLabels(element));
+            });
+        }
+        $.each(config, function (key, value) {
+            if (key === 'description') {
+                labels.push(value);
+            }
+        });
+        return labels;
+    }
+
     var randomString = function (length) {
         var alphabet = 'abcdefghijklmnopqrstuvwxyz', i, result = '';
         for (i = 0; i < (length || 4); i++) {
@@ -194,6 +209,7 @@
             formConfig = getConfigObject('form'),
             form = factory.createForm(formConfig),
             labelSelector = factoryConfig.container.type + ' > label',
+            expectedLabels,
             $labels, i;
     
         checkCommon(form, formConfig, ['action', 'method']);
@@ -208,10 +224,12 @@
         checkStyles($(form).find('input[type=text]').get(0), factoryConfig.styles.input.text);
         checkStyles($(form).find('select').get(0), factoryConfig.styles.select);
         checkStyles($(form).find('input[type=submit]').get(0), factoryConfig.styles.input.submit);
+
+        expectedLabels = extractLabels(formConfig);
         $labels = $(form).find(labelSelector);
-        equals($labels.length, formConfig.elements.length, 'Labels were inserted correctly for every element.');
+        equals($labels.length, expectedLabels.length, 'Labels were inserted correctly for all elements with descriptions.');
         $labels.each(function (index) {
-            var description = formConfig.elements[index].description;
+            var description = expectedLabels[index];
             equals($(this).html(), description ? description : "", 'Label content was added correctly.');
         });
         equals(form.getAttribute('name'), formConfig.name, 'Form has correct name');
