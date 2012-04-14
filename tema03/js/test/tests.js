@@ -273,8 +273,8 @@
             $.get(AJAX_SCRIPT_URL, function (data) {
                 var elements = JSON.parse(data), i = 0; 
                 $.each(elements, function (key, value) {
-                    equals(key, $target.find('option').get(i).getAttribute('name'), 'Form name was inserted correctly via AJAX');
-                    equals(value, $target.find('option').get(i).value, 'Form value was inserted correctly via AJAX');
+                    equals($target.find('option').get(i).getAttribute('name'), key, 'Form name was inserted correctly via AJAX');
+                    equals($target.find('option').get(i).value, value, 'Form value was inserted correctly via AJAX');
                     i++;
                 });
             });
@@ -282,7 +282,7 @@
             // test value of the submit
             $.get('ajax.php?data=test', function (data) {
                 var resp = JSON.parse(data);
-                equals(resp.value, $('#' + ajaxConfig2.target).get(0).value, 'Submit value was updated');
+                equals($('#' + ajaxConfig2.target).get(0).value, resp.value, 'Submit value was updated');
             });
             start();
         }, 1000);
