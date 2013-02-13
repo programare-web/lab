@@ -192,7 +192,6 @@ Pentru autentificarea unui utilizator, trebuie urmăriți următorii pași:
    - Scriptul verifică informațiile de autentificare (spre exemplu, perechea user & password) și întoarce o decizie: informațiile sunt valide sau invalide.
    - În cazul în care informațiile sunt valide, în script se poate înregistra o variabilă de sesiune care să fie apoi folosită ca referință pentru starea autentificată. Aceasta este de cele mai multe ori un flag, sau o variabilă care conține numele de utilizator și care este ștearsă (cu unset) la logout, dar poate fi și alteceva, în funcție de complexitatea și cerințele aplicației.
 
-Înregistrarea unei variabile de sesiune se făcea în PHP4 cu session_register(), dar această funcție este deprecated acum. Modalitatea de înregistrare / deînregistrare a unei variabile de sesiune este crearea / ștergerea unei perechi cheie – valoare în array-ul superglobal $_SESSION.
 
 === Link-uri utile ===
 [[http://www.php.net/manual/en/book.session.php | Session - PHP.net]]
