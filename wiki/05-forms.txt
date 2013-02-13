@@ -65,12 +65,6 @@ home=Cosby&favorite=flies
 Informațiile trimise prin intermediul variabilelor POST și GET pot fi regăsite în PHP în vectorii asociativi $_POST și $_GET. Cheile lor reprezintă numele câmpurilor (definite cu proprietatea name, în HTML), iar valorile reprezintă valorile efective introduse de utilizator.
 $_GET și $_POST sunt variabile super-globale și sunt vizibile oriunde în cadrul unui script PHP. Ele pot fi folosite exact ca oricare alt vector asociativ.
 
-=== Diferența între $_GET și $HTTP_GET_VARS ===
-
-În variante anterioare PHP 5 (și în general în cod scris cu versiuni mai vechi de PHP), pentru accesul la informațiile trimise cu GET sau POST, se foloseau $HTTP_GET_VARS (respectiv $HTTP_POST_VARS). Acestea funcționau în mod perfect asemănător cu $_GET (și $_POST). Există însă diferențe.
-$HTTP_GET_VARS este o variabilă globală (nu super-globală), ceea ce inseamnă că trebuie declarată cu "global $HTTP_GET_VARS" pentru a putea fi folosită interior unei funcții (sau clase).
-Variabilele $HTTP_GET_VARS si $HTTP_POST_VARS sunt deprecated și din PHP 6 ele nu vor mai fi folosite. Deși încă funcționează, se descurajează folosirea acestora.
-
 === Maniere particulare de trimitere a datelor ===
 
 Putem profita de maniera de trimitere a informațiilor cu metoda GET, pentru a putea trimite date și mai flexibil (fără să fim 'legați' de necesitatea introducerii formularelor). Astfel, un link de forma:
