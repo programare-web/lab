@@ -311,6 +311,13 @@ html body#content div p {
 
 Textul va avea culoarea gri, deoarece specificitatea stilului inline e cea mai mare (1000 > 0211 > 0104 > 0104).
 
+
+=== Debugging ===
+Majoritatea browserelor includ unelte pentru developeri. Putem vedea structura paginii încărcate, regulile CSS aplicate fiecărui element, și le putem modifica "pe viu" în pagina încărcată. Mai putem executa cod JavaScript, sau insera breakpoint-uri, într-un laborator viitor.
+
+Pentru Firefox folosim extensia "firebug": din meniul "tools" -> "web developer" -> "firebug" -> "open firebug". Chrome are o unealtă asemănatoare: din meniul "tools" -> "Developer Tools".
+
+
 === Referințe: ===
   * [[http://reference.sitepoint.com/css|Sitepoint CSS reference]]
 
