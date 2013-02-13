@@ -241,75 +241,19 @@ După cum ați putut vedea, asupra unui element se pot aplica mai multe seturi d
   - declarațiile cu același nivel de importanță și cu aceeași origine se ordonează după **specificitate**
   - dacă au aceeași origine, importanță și specificitate se aplică în ordinea în care au fost declarate
 
-==== Originea stylesheet-urilor și nivelul de importanță ====
-
 Din punct de vedere al originii, se disting trei tipuri de stylesheet-uri (în ordinea crescătoare a priorității):
   - **User agent stylesheets** - stiluri predefinite de browser. Dacă încercați o pagină fără nici un stil definit, veți observa că există anumite stiluri implicite aplicate elementelor (spre exemplu, linkurile au implicit culoarea albastră și sunt subliniate). Unele dintre aceste stiluri diferă ușor între browsere, de aceea este recomandată folosirea unui stylesheet de [[http://meyerweb.com/eric/tools/css/reset/|reset]], pentru a porni de la același bază în orice browser. Pentru mai multe detalii, puteți urmări această [[http://stackoverflow.com/questions/116754/best-css-reset|discuție]].
   - **Author stylesheets** - stiluri definite de autorul paginii web (cele incluse în pagină prin ''<link>'', ''<style>'' sau prin atributul ''style="..."'')
   - **User stylesheets** - unele browsere oferă utilizatorilor posibilitatea de a supradefini stilurile paginilor și de a aplica fișierele lor "deasupra" celor definite de autorii paginilor și celor definite de browser.
 
-Din punct de vedere al importanței, avem două niveluri: reguli importante și reguli normale. Regulile importante se disting prin prezența declarației ''!important'' și au prioritate în fața regulilor normale. ''!important'' trebuie adăugat la sfârșitul regulii, chiar înainte de '';''. ''!important'' trebuie folosit doar unde este neapărat necesar, folosirea nejustificată duce la complicarea stylesheet-urilor și le face greu de întreținut și modificat.
+În funcție de origine, ordinea aplicării regulilor este (în ordinea crescătoare a priorității):
+  - reguli la nivel de browser (user-agent stylesheets)
+  - reguli din user stylesheets (cele aplicate de utilizator în browser)
+  - reguli din author stylesheets (cele definite de pagina web)
 
-<code css>
-p {
-  color: blue !important;
-}
-</code>
+Din punct de vedere al importanței, avem două niveluri: reguli importante și reguli normale. Regulile importante se disting prin prezența declarației ''!important'', și se folosesc doar în cazuri excepționale, în lipsa altor posibilități de organizare a stylesheet-urilor.
 
-În funcție de origine și importanță, ordinea aplicării regulilor este (în ordinea crescătoare a priorității):
-  - reguli la nivel de browser (user-agent stylesheets) 
-  - reguli cu importanță normală din user stylesheets (cele aplicate de utilizator în browser)
-  - reguli cu importanță normală din author stylesheets (cele definite de pagina web)
-  - reguli importante din author stylesheets (definite de pagina web)
-  - reguli importante din user stylesheets (definite de utilizatorul browserului)
-
-==== Specificitatea elementelor ====
-
-După cum am menționat anterior, dacă două seturi de reguli au aceeași origine și aceeași importanță, ele sunt ordonate în funcție de specificitate. [[http://www.w3.org/TR/CSS21/cascade.html#specificity|Standardul]] definește modul de calcul al specificității. Specificitatea se poate calcula după următorul algoritm:
-
-  - dacă declațiile provin din atributul ''style="..."'' al elementului (stiluri inline), au cea mai mare specificitate.
-  - se numără selectorii de id-uri (''#myElement'') din regulă. Dacă regulile au același număr de selectori de id-uri, treceți la pasul 3.
-  - se numără selectorii de clase (''.myRules'') din regulă și numărul de pseudo-clase ('':hover''). Declarația cu numărul total mai mare de astfel de selectori are specificitate mai mare. Dacă au același număr, treceți la pasul 4. 
-  - se numără selectorii de tag (''div'') și pseudo-elemente ('':first-letter''). Declarația cu numărul total mai mare de astfel de selectori are specificitate mai mare. Dacă au același număr, treceți la pasul 4.
-  - dacă în toți ceilalți pași regulile au ieșit egale ca specificitate, se consideră ordinea în care au fost declarate
-  
-Pentru a ușura acest proces, se poate considera următoarea convenție: specificitatea unui set de reguli este un număr de forma ''xabc'', unde:
-  * ''x'' - poate lua valoarea 0 (setul de reguli este declarat în cadrul unui tag ''<style>'' sau într-un fișier extern) sau 1 (setul de reguli este declarat inline, prin atributul ''style'' al elementului) 
-  * ''a'' - numărul de selectori id
-  * ''b'' - numărul de selectori de clasă
-  * ''c'' - numărul de selectori de tag  
-
-Dacă numărul atașat unui set de reguli este mai mare decât al altuia înseamnă că setul are specificitate mai mare și se va aplica în detrimentul celuilalt. De exemplu:
-
-<code css>
-#content #myId p.myclass {
-	/* Specificitate: 0211 */
-	color: red;
-}
-
-html body div#myId p {
-	/* Specificitate: 0104 */
-	color: blue;
-}
-
-html body#content div p {
-	/* Specificitate: 0104 */
-	color: yellow;
-}
-</code>
-
-<code html>
-<html>
-    <head></head>
-	<body id="content">
-		<div id="myId">
-			<p class="myClass" style="color: gray;">Test</p>
-		</div>
-	</body>
-</html>
-</code>
-
-Textul va avea culoarea gri, deoarece specificitatea stilului inline e cea mai mare (1000 > 0211 > 0104 > 0104).
+Regulile aplicate unui element sunt ordonate în funcție de specificitate. Există un algoritm bine definit, pe care nu îl vom descrie aici, dar în general, selectorii mai lungi (cu mai multe elemente) au prioritate.
 
 
 === Debugging ===
