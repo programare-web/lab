@@ -302,7 +302,7 @@ Textul va avea culoarea gri, deoarece specificitatea stilului inline e cea mai m
 == Exercitii ==
 Descărcați {{:lab04.zip|această arhivă}} și plasați fișierele într-un director accesibil de către serverul vostru web.
 
-  - (1p) Creați o pagină simplă HTML 4.01 în care să vă prezentați un hobby. Pagina ar trebui să aibă minim 10 elemente distincte. Nu puneți accent pe aspectul paginii, însă validați structura. Schimbați ''<!DOCTYPE>'' la XHTML strict și repetați validarea până când nu mai sunt erori. \\ **Hint**: [[http://validator.w3.org/|Pentru validare]] 
+  - (1p) Creați o pagină simplă HTML 4.01 în care să vă prezentați un hobby. Pagina ar trebui să aibă minim 10 elemente distincte. Nu puneți accent pe aspectul paginii, însă validați structura. \\ **Hint**: [[http://validator.w3.org/|Pentru validare]] 
   - (1p) Creați o pagină simplă HTML5 și folosiți următoarele taguri: ''<audio>'', ''<video>'', ''<header>'', ''<footer>''. \\ **Hint**: Dacă rulați în Firefox, țineți cont că [[https://developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements| nu suportă]] decât anumite formate de fișiere.
   - (1p) Calculați specificitatea pentru fiecare dintre regulile de mai jos: <code css>
 p.message {
@@ -329,7 +329,7 @@ p {
 </code>
   - (1p) Creați un user stylesheet și aplicați-l în browser peste un site la alegerea voastră pentru a-i modifica aspectul într-un mod vizibil. \\ **Hint**: [[http://userstyles.org/|userstyles.org]] - instalati mai intai plugin-ul pentru Firefox sau Chrome de pe aceeasi pagina.
   - (2p) Reparați pagina din directorul ''ex5/'' pentru a o face să arăte ca în {{:lab04-ex5.jpg?linkonly|acest screenshot}}. Trebuie să modificați doar css-ul.
-  - (4p) Folosind resursele din directorul ''ex6/'', recreați pagina prezentată în {{:lab04-ex6.jpg?linkonly|acest screenshot}}. Puteți folosi fie HTML 4.0, fie XHTML 1.0. Pagina trebuie să fie validă și să se apropie cât mai mult vizual de screenshot-ul prezentat. Puteți folosi Firefox sau Chrome ca browser de referință. \\
+  - (4p) Folosind resursele din directorul ''ex6/'', recreați pagina prezentată în {{:lab04-ex6.jpg?linkonly|acest screenshot}}. Pagina trebuie să fie validă și să se apropie cât mai mult vizual de screenshot-ul prezentat. Puteți folosi Firefox sau Chrome ca browser de referință. \\
   \\ Bonus:
   - (1p) Aplicați o tranziție și o transformare din specificația CSS3 peste pagina pe care ați creat-o la punctul anterior.
   - (1p) Modificați markup-ul pentru a folosi cât mai multe elemente specifice HTML5 și validați rezultatul.
