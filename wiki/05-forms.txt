@@ -129,7 +129,6 @@ Folosirea register_globals este insistent descurajată.
 În exemplul de mai jos, avem un formular pentru uploadul fișierelor. El conține elemente în plus față de formularul standard (prezentat mai sus).
 <code html>
 <form enctype="multipart/form-data" action="script.php" method="POST"> 
-    <input type="hidden" name="MAX_FILE_SIZE" value="100000" /> Choose a file to upload: 
     <input name="uploadedfile" type="file" /><br /> <input type="submit" value="Upload File" /> 
 </form> 
 </code>
@@ -137,7 +136,7 @@ Folosirea register_globals este insistent descurajată.
 Elementele noi sunt:
 
     * enctype="multipart/form-data" - specificând acest câmp, conținutul fișierelor trimise va fi "împachetat" în secțiuni separate (se face o distincție între modul de codificare al datelor din formular și fișierele de trimis)
-    * input type="hidden" name="MA... - setează dimensiunea maximă permisă pentru un fișier; valoarea este folosită de script.php (câmpul poate fi omis)
+    * input type="file" - browser-ul va afișa un câmp pentru selecția fișierului
 
 
 Conținutul script.php:
