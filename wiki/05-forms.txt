@@ -175,8 +175,8 @@ Mecanismul pentru sesiuni este foarte simplu:
 
    - Un script PHP inițiază o sesiune cu session_start(). Atenție - pentru **fiecare** nou script apelat trebuie inclus apelul către session_start() înainte de afișarea oricărui output.
    - Se verifică cookie-urile trimise în REQUEST-ul HTTP sau linia de REQUEST a metodelor GET sau POST.
-         * Dacă nu exista un COOKIE cu numele default PHPSESSID (sau nu există parametrul SID în linia REQUEST), se inițiază o sesiune nouă, care primește un session id aleator, și se creează în directorul temporar al sistemului un fișier în care vor fi păstrate informațiile sesiunii
-         * Altfel, se utilizează valoarea parametrului (PHPSESSID sau SID din GET sau POST) pentru a porni sesiunea cu ACEL session id, care se presupune că există.
+         * Dacă nu exista un COOKIE cu numele default PHPSESSID, se inițiază o sesiune nouă, care primește un session id aleator, și se creează în directorul temporar al sistemului un fișier în care vor fi păstrate informațiile sesiunii
+         * Altfel, se utilizează valoarea din PHPSESSID pentru a porni sesiunea cu ACEL session id, care se presupune că există.
    - După ce sesiunea a fost pornită, utilizatorul are acces Read / Write la datele din fișierul temporar prin intermediul variabilei superglobale $_SESSION (care este un array).
    - Sesiunea se închide la expirarea unui timp sau prin funcția session_destroy()
 
