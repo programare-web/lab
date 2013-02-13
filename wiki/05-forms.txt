@@ -1,0 +1,317 @@
+= Laborator 05 - Formulare HTML, Persistența Datelor =
+* Obiective: 
+  * Crearea și utilizarea formularelor HTML
+  * Utilizarea sesiunilor și a cookie-urilor pentru a persista datele între cereri
+  * Serializare în PHP
+
+== Formulare ==
+
+=== Formulare în HTML ===
+Formularele sunt utile pentru a realiza schimburi de informații cu serverul, mai precis, pentru a trimite informații serverului.
+Un exemplu de formular:
+
+<code html>
+<form action="script.php" method="POST">
+    <input type="text" name="camp_text" value="completeaza aici">
+    <input type ="password" name="camp_parola">
+
+    <textarea rows="2" cols="20">Textul vostru mare aici</textarea>
+
+    <select name="camp_combobox">
+        <option value="valoare1">Valoare 1</option>
+        <option value="valoare2" selected="selected">Valoare 2</option>
+    </select>
+
+    <input type="radio" name="grup1" value="op1"> Optiune 1
+    <input type="radio" name="grup1" value="op2" checked="checked"> Optiune 2
+    <input type="radio" name="grup1" value="op3"> Optiune 3
+
+    <input type="submit" name="camp_submit" value="Trimite" >
+</form>
+</code>
+Formularul de mai sus va fi trimis resursei script.php, folosind metoda POST.
+
+Acesta conține un editbox avand numele camp_text si valoarea default "completeaza aici", valoare ce poate fi modificată de utilizator.
+In continuare, formularul conține un câmp de tip parolă (are caracterele ascunse), apoi un câmp richtext;
+
+Același formular conține și un selectbox, având lista de opțiuni posibile, precum și o opțiune selectată default.
+Găsim de asemenea și o listă de "radio buttons". Particularitatea la radio buttons este că toate opțiunile au același nume. Doar valoarea bifată va fi trimisă script-ului.
+
+=== Metodele GET și POST ===
+
+În HTML, putem specifica două metode diferite de trimitere a formularului (folosind proprietatea METHOD).
+
+Dacă metoda GET este cea specificată, browserul preia valoarea proprietății action (în exemplul nostru "script.php"), adaugă ? apoi concatenează conținutul informațional sub formă de perechi cheie-valoare. Cheile reprezintă numele componentelor din formular (specificate cu proprietatea name), iar valorile sunt efectiv conținutul câmpurilor completate (sau specificate cu proprietatea value). Concatenarea va produce următorul URL:
+
+<code>
+script.php?camp_text=valoare&camp_parola=valoare etc.
+</code>
+
+Se observă că perechile cheie-valoare sunt codificate într-o manieră directă: "cheie=valoare" și sunt separate prin &. Transmiterea se face direct prin URL, iar conțintul informațional este direct vizibil pentru utilizator;
+
+Dacă pentru trimitere specificăm metoda POST, browser-ul va construi o cerere HTTP de tip post către resursa cerută (în exemplul nostru, "script.php"), iar perechile cheie-valoare se vor afla în conținutul cererii HTTP către server. În acest caz, informațiile nu mai sunt vizibile direct utilizatorului, însă ele sunt scrise în clar în cererea HTTP. Iată un exemplu de cerere HTTP folosind metoda POST:
+
+<code>
+POST /path/script.cgi HTTP/1.0 
+From: email@domain.com 
+User-Agent: HTTPTool/1.0 
+Content-Type: application/x-www-form-urlencoded 
+Content-Length: 32 
+home=Cosby&favorite=flies 
+</code>
+
+=== Accesul la informațiile trimise în PHP ===
+
+Informațiile trimise prin intermediul variabilelor POST și GET pot fi regăsite în PHP în vectorii asociativi $_POST și $_GET. Cheile lor reprezintă numele câmpurilor (definite cu proprietatea name, în HTML), iar valorile reprezintă valorile efective introduse de utilizator.
+$_GET și $_POST sunt variabile super-globale și sunt vizibile oriunde în cadrul unui script PHP. Ele pot fi folosite exact ca oricare alt vector asociativ.
+
+=== Diferența între $_GET și $HTTP_GET_VARS ===
+
+În variante anterioare PHP 5 (și în general în cod scris cu versiuni mai vechi de PHP), pentru accesul la informațiile trimise cu GET sau POST, se foloseau $HTTP_GET_VARS (respectiv $HTTP_POST_VARS). Acestea funcționau în mod perfect asemănător cu $_GET (și $_POST). Există însă diferențe.
+$HTTP_GET_VARS este o variabilă globală (nu super-globală), ceea ce inseamnă că trebuie declarată cu "global $HTTP_GET_VARS" pentru a putea fi folosită interior unei funcții (sau clase).
+Variabilele $HTTP_GET_VARS si $HTTP_POST_VARS sunt deprecated și din PHP 6 ele nu vor mai fi folosite. Deși încă funcționează, se descurajează folosirea acestora.
+
+=== Maniere particulare de trimitere a datelor ===
+
+Putem profita de maniera de trimitere a informațiilor cu metoda GET, pentru a putea trimite date și mai flexibil (fără să fim 'legați' de necesitatea introducerii formularelor). Astfel, un link de forma:
+
+<code html>
+<a href="script.php?id=10"> Catre script </a>
+</code>
+
+Este echivalent cu un formular:
+
+<code html>
+<form method="GET" action ="script.php">
+    <input type="text" name="id">
+    <input type="submit" value="Catre script">
+</form>
+</code>
+în care utilizatorul completează cu 10 câmpul id.
+
+Această abordare permite programatorului de aplicații web să particularizeze execuția unui script (precum "script.php"), în funcție de conținutul variabilei id.
+Nu există o corespondență a acestei abordări pentru metoda POST, însă pot fi trimise valori predefinite folosind tipul hidden. Exemplu:
+
+<code html>
+<form action="script.php" method="POST">
+    <input type="hidden" name="id" value="5">
+    <input type="text" name="nume_camp">
+    <input type="submit" value="trimite">
+</form>
+</code>
+Un astfel de input într-un formular va avea ca efect trimiterea (alături de câmpul nume_camp) câmpului id cu valorea 5.
+Inputurile hidden nu sunt vizibile când afișăm pagina HTML).
+
+
+=== Linkuri utile ===
+[[http://www.w3schools.com/html/html_forms.asp|HTML Forms and Input - W3Schools]]
+
+=== Directiva register-globals ===
+
+Activarea directivei register_globals permite folosirea directă a variabilelor trimise prin metodele GET și POST, fără a mai folosi variabilele globale $_GET și $_POST. De exemplu, dacă register_globals este activat, conținutul $_GET['form_elem'] poate fi accesat în mod direct prin variabila $form_elem. Același lucru este valabil și pentru elemente trimise prin POST.
+Aparent este mai simplă operarea cu variabile efective $form_elem, decât cu elemente ale unui array asociativ (ex: $_GET['form_elem']).
+Cu toate astea, register_globals activată reprezintă un imens potențial pericol pentru securitatea unei aplicații.
+
+Fie următorul cod (script.php) executat pe un server cu register_globals activat:
+<code php>
+<?php
+if (authenticated_user()) {
+    $authorized = true;
+}
+
+
+if ($authorized==true) {
+    //executa cod in regim autorizat
+}
+?>
+</code>
+
+În secvența de cod de mai sus este folosită o variabilă locală $authorized pentru verificarea unei autentificări reușite. Dacă cineva ar accesa script.php?authorized=true, scriptul ar intra în regiunea critică de cod, ignorând complet codul de autorizare (funcția authenticated_user).
+Folosirea register_globals este insistent descurajată.
+(detalii la: [[http://www.php.net/register_globals|Register Globals - PHP.net]])
+
+=== Uploadarea fișierelor ===
+
+În exemplul de mai jos, avem un formular pentru uploadul fișierelor. El conține elemente în plus față de formularul standard (prezentat mai sus).
+<code html>
+<form enctype="multipart/form-data" action="script.php" method="POST"> 
+    <input type="hidden" name="MAX_FILE_SIZE" value="100000" /> Choose a file to upload: 
+    <input name="uploadedfile" type="file" /><br /> <input type="submit" value="Upload File" /> 
+</form> 
+</code>
+
+Elementele noi sunt:
+
+    * enctype="multipart/form-data" - specificând acest câmp, conținutul fișierelor trimise va fi "împachetat" în secțiuni separate (se face o distincție între modul de codificare al datelor din formular și fișierele de trimis)
+    * input type="hidden" name="MA... - setează dimensiunea maximă permisă pentru un fișier; valoarea este folosită de script.php (câmpul poate fi omis)
+
+
+Conținutul script.php:
+
+<code php>
+$target_path = "uploads/"; 
+$target_path = $target_path . basename( $_FILES['uploadedfile']['name']); 
+
+if( move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) { 
+    echo "Fisierul ". basename( $_FILES['uploadedfile']['name']). " a fost uploadat"; 
+} 
+else { 
+    echo "Eroare la uploadarea fisierului!"; 
+} 
+</code>
+Explicații:
+
+    * $target_path - conține calea de pe server
+    * basename (...) - funcție PHP care întoarce denumirea standard a unui fișier ([nume].[extensie])
+    * $_FILES - vector asociativ ce reține toate informațiile despre fișierele primite; Când script.php este rulat, fișierul uploadat va fi depus într-o locație temporară de pe server. Această locație este reținută în: $_FILES['uploadedfile']['tmp_name'] (cheia 'uploadedfile' nu este altceva decât numele inputului din formular). Dacă până la sfârșitul rulării scriptului script.php fișierul nu este mutat într-o altă locație (permanentă), acesta va fi șters. Numele efectiv al fișierului este reținut în $_FILES['uploadedfile']['name']
+    * move_uploaded_file - funcție care realizează mutarea fișierului la locația dorită
+
+
+Pentru detalii consultați descrierea funcțiilor în PHP.net și citiți următorul tutorial:
+[[http://www.tizag.com/phpT/fileupload.php|File Upload]]
+
+
+
+== Mecanismul de sesiuni în PHP ==
+
+După cum s-a mai discutat la laborator, HTTP este un protocol stateless. Cea mai importantă urmare a acestui fapt din punctul de vedere al aplicațiilor web fiind că, folosind doar protocolul HTTP, un server web nu poate determina dacă o cerere este legată logic de una anterioară, de la același client. Capacitatea serverului web de a recunoaște că o cerere face parte dintr-o succesiune de cereri de la același client este utilă, spre exemplu, pentru implementarea unei zone protejate cu parolă în aplicație (caz în care utilizatorul se autentifică o dată, apoi toate cererile de la acest client sunt considerate autentificate pâna la logout).
+
+Pentru a implementa un asemenea comportament, se utilizează mai multe metode aplicate peste nivelul HTTP al serverului web, în funcție de tipul de server și de limbajul de programare. În PHP, cel mai utilizat mecanism pentru reținerea informațiilor despre starea clientului este sesiunea.
+
+Mecanismul pentru sesiuni este foarte simplu:
+
+   - Un script PHP inițiază o sesiune cu session_start(). Atenție - pentru **fiecare** nou script apelat trebuie inclus apelul către session_start() înainte de afișarea oricărui output.
+   - Se verifică cookie-urile trimise în REQUEST-ul HTTP sau linia de REQUEST a metodelor GET sau POST.
+         * Dacă nu exista un COOKIE cu numele default PHPSESSID (sau nu există parametrul SID în linia REQUEST), se inițiază o sesiune nouă, care primește un session id aleator, și se creează în directorul temporar al sistemului un fișier în care vor fi păstrate informațiile sesiunii
+         * Altfel, se utilizează valoarea parametrului (PHPSESSID sau SID din GET sau POST) pentru a porni sesiunea cu ACEL session id, care se presupune că există.
+   - După ce sesiunea a fost pornită, utilizatorul are acces Read / Write la datele din fișierul temporar prin intermediul variabilei superglobale $_SESSION (care este un array).
+   - Sesiunea se închide la expirarea unui timp sau prin funcția session_destroy()
+
+Prin utilizarea sesiunilor, limitarea duratei de viață a variabilelor la rularea unui script poate fi înlăturată. Valori utile pot fi salvate ca variabile de sesiune și utilizate în orice script.
+
+=== Folosirea sesiunilor pentru autentificare ===
+
+Un caz de utilizare comun pentru sesiuni în programarea web (sesiunile nu sunt o tehnică limitată pentru PHP) este autentificarea și păstrarea în stare autentificată a unui utilizator al aplicației, în timpul navigării acestuia prin mai multe pagini web. Similar și oarecum cuprins în acest exemplu este și coșul de cumpărături dintr-un magazin virtual (în care se păstrează produsele cumpărate până într-un punct, chiar dacă utilizatorul vede mai multe pagini:detalii produs, comparație produse...).
+
+Pentru autentificarea unui utilizator, trebuie urmăriți următorii pași:
+
+   - Login form: utilizatorului i se cere să introducă informații într-un formular, care apoi este transmis scriptului de autentificare
+   - Scriptul verifică informațiile de autentificare (spre exemplu, perechea user & password) și întoarce o decizie: informațiile sunt valide sau invalide.
+   - În cazul în care informațiile sunt valide, în script se poate înregistra o variabilă de sesiune care să fie apoi folosită ca referință pentru starea autentificată. Aceasta este de cele mai multe ori un flag, sau o variabilă care conține numele de utilizator și care este ștearsă (cu unset) la logout, dar poate fi și alteceva, în funcție de complexitatea și cerințele aplicației.
+
+Înregistrarea unei variabile de sesiune se făcea în PHP4 cu session_register(), dar această funcție este deprecated acum. Modalitatea de înregistrare / deînregistrare a unei variabile de sesiune este crearea / ștergerea unei perechi cheie – valoare în array-ul superglobal $_SESSION.
+
+=== Link-uri utile ===
+[[http://www.php.net/manual/en/book.session.php | Session - PHP.net]]
+
+== Cookies în PHP ==
+
+Un cookie este un fișier de dimensiuni reduse trimis de server și salvat pe calculatorul personal. În acest fișier pot fi salvate diverse informații, dar cel mai des este utilizat pentru identificarea utilizatorilor.
+
+<code php>
+bool setcookie ( string $name [, string $value [, int $expire = 0 [, string $path [, string $domain [, bool $secure = false [, bool $httponly = false  ]]]]]] ) 
+</code>
+
+setcookie() definește un cookie ce va fi trimis împreună cu header-ele HTTP. De aceea, cookie-urile trebuie trimise înaintea oricărui output. Acest lucru înseamnă că funcția trebuie apelată înaintea oricărui output, inclusiv tagurile <html>, <head> sau spații albe.
+
+Odată setate, cookie-urile pot fi accesate la următoarea încărcare a paginii cu ajutorul variabilei $_COOKIE sau $HTTP_COOKIE_VARS. Valorile cookie-urilor există de asemenea în $_REQUEST.
+
+Toți parametrii în afară de $name sunt opționali. 
+
+
+* name - numele cookie-ului
+* value - Valoarea stocată în cookie. Această valoare poate fi accesată în felul următor: $_COOKIE['name']
+* expire - Timpul exprimat în secunde până la expirarea cookie-ului. ex: time() + 60*60*24*30 - cookie-ul va expira în 30 de zile. Dacă nu este specificată această valoare, expire ia valoarea default, adică 0 și va expira la închiderea sesiunii (adică la închiderea browser-ului). 
+* path - Calea pe server unde va fi disponibil cookie-ul. Dacă este setat la '/', cookie-ul va fi disponibil pe întreg domeniul. Valoarea default este directorul din care este setat cookie-ul.
+* domain - domeniul unde este disponibil cookie-ul. De exemplu: pentru ca un cookie să fie valabil pe toate subdomeniile "laboratorPW.ro" atunci această valoare trebuie setată la '.laboratorPW.ro'. Dacă îl setăm la 'www.laboratorPW.ro' atunci cookie-ul va fi disponibil doar pe subdomeniul www.
+* secure - specifică dacă un cookie trebuie transmis printr-o conexiune https de către client (true). Pe partea de server, această datorie revine programatorului: ($_SERVER["HTTPS"])
+* httponly - specifică dacă un cookie poate fi accesat doar prin protocol HTTP (true). Asta înseamnă că un cookie nu va fi disponibil de exemplu în JavaScript. Acest parametru poate fi utilizat pentru a opri furtul de identitate prin atacuri de tip XSS. Mai multe în laboratoarele următoare. (Acest parametru a fost adăugat începând cu PHP 5.2.0)
+
+<code php>
+<body>
+
+    <?php
+        if (isset($_COOKIE["user"]))
+            echo "Welcome " . $_COOKIE["user"] . "!<br />";
+        else
+            echo "Welcome guest!<br />";
+    ?>
+
+</body>
+</code>
+
+=== Link-uri utile ===
+
+[[http://www.w3schools.com/PHP/php_cookies.asp|PHP Cookies - W3Schools]]
+
+[[http://php.net/manual/en/function.setcookie.php|setcookie - PHP.net]]
+
+== Serializare în PHP ==
+
+Serializarea este procesul de conversie a unei structuri de date sau a unui obiect într-o secvență de biți pentru a putea fi stocat într-un fișier, un buffer sau transmis prin intermediul unei rețele pentru a putea fi utilizat în alt mediu.
+
+PHP are definite două metode ce se ocupă de acest aspect: serialize() și unserialize(). În PHP resursele nu pot fi serializate (file pointers, sockets, etc.). Aceste metode apelează _ _sleep(), respectiv _ _wakeup() înainte de a începe procesul de serializare / deserialziare. Acest lucru poate deveni util în cazul în care se dorește executarea unor operațiuni de clean-up sau a închiderii conexiunii la baza de date. De asemenea, funcția _ _sleep() poate fi utilizată pentru a specifica atributele obiectului ce se doresc serializate. Aceasta trebuie să întoarcă un array cu atributele obiectului.
+
+<code php>
+<?php
+class obiect {
+
+function __construct() {
+	$this->two = 111;
+	$this->three = 234;
+}
+
+function __sleep() {
+	return array("two");
+}
+
+}
+
+$unu = new obiect();
+echo $unu->three; // 234
+$bloc = serialize($unu); 
+echo $bloc;  // O:6:"obiect":1:{s:3:"two";i:111;}
+             // daca nu se suprascrie functia __sleep() aici se afiseaza
+             // O:6:"obiect":2:{s:3:"two";i:111;s:5:"three";i:234;}
+$doi = unserialize($bloc);
+echo $doi->three; // nu afiseaza nimic
+                  // daca nu se suprascrie functia __sleep() aici se afiseaza
+                  // 234
+?>
+</code>
+
+=== Link-uri utile ===
+
+[[http://en.wikipedia.org/wiki/Serialization|Serialization - Wikipedia]]
+
+[[http://php.net/manual/en/function.serialize.php|Serialize - PHP.net]]
+
+[[http://php.net/manual/en/function.unserialize.php|Unserialize - PHP.net]]
+
+[[http://www.sematopia.com/2006/03/how-to-use-__sleep-to-serialize-your-class/|How to:]]
+
+== Exerciții ==
+Lămuriri vizavi de conținutul bazei de date:
+* baza de date conține două tabele: ''articles'' și ''users''
+* tabelul ''users'' conține câmpurile ''username'', ''password'' și ''rights''
+* câmpul ''password'' reține parola //criptată// cu ''md5'' a utilizatorului; Valorile //în clar// sunt: //admin// (pentru utilizatorul //admin//) și //parola// (pentru restul utilizatorilor)
+* campul ''rights'' reține o listă de înregistrări, pe care utilizatorul are dreptul să le vadă; 
+* baza de date poate fi gasita aici {{:laboratoare:pwlab5.zip|}}
+
+  - Creați o pagină de autentificare a unui utilizator. Pentru autentificare folosiți baza de date anexată în laborator. **Observație**: pentru protejarea parolelor, acestea nu sunt salvate //în clar// în baza de date. Se salvează o formă criptată, folosind //md5//: http://www.php.net/manual/en/function.md5.php
+    * **(0.5p)** Dacă autentificarea reușește, utilizatorul este redirectat pe o pagină nouă cu un **formular de upload fisiere**, și este creată o nouă sesiune pentru a se păstra utilizatorul logat. Dacă logarea eșuează, este afișat acest lucru în pagina de login. Formularul de upload nu trebuie să poată fi accesat fără ca utilizatorul să fie logat.
+    * **(0.5p)** Implementați efectiv mecanismul de upload fișiere; testați;
+    * **(1.0p)** Folosiți **cookie-uri**; stabiliți ce informație trebuie reținută în cookie. Există probleme de securitate?
+    * **(1.0p)** Modificați exemplul anterior, astfel încât să folosiți **sesiuni**; Care sunt diferențele?
+    * **(1.0p)** Ce se întâmplă dacă apelați funcțiile "setcookie" sau "session_start" după afișarea de cod HTML? Cum explicați?
+  - Scrieți un script ''article.php'', care primește ca parametru (prin metoda GET) id-ul unei înregistrări, și, dacă utilizatorul logat are dreptul să acceseze respectiva înregistrare, afișați-o. Altfel, afișați o eroare specifică. Urmați pașii de mai jos:
+    * **(1.5p)** Scrieți o clasă **''Login''**, care reține și întoarce informații despre utilizatorul autentificat: Implementați clasa **''Login''**; adăugați metode **getter** și **setter** pentru informațiile pe care aceasta le conține;
+    * **(1.5p)** Scrieți două funcții membru ale clasei **''Login''** (simulați supraîncărcarea folosind metoda magică ''__call''):
+       <code php>
+        public function getPermissions (); // intoarce lista de articole pe care utilizatorul autentificat le poate vedea
+        public function getPermissions ($articleId); //daca utilizatorul are dreptul de a vedea inregistrarea cu id-ul ''$articleId'', intoarce true; altfel intoarce false;
+       </code>
+     * **(1.5p)** Când autentificarea se termină cu succes, creeați un obiect de tip **''Login''** și serializați-l, folosind funcția ''serialize''. Ce reprezintă valoarea întoarsă de această funcție? Afișați-o.
+     * **(1.5p)** Rețineți obiectul serializat în sesiune. În fișierul ''article.php'', verificați dacă sesiunea voastră există, și dacă da deserializați obiectul conținut pentru a stabili dacă utilizatorul autentificat are dreptul de a vedea înregistrarea.
+     * **(2.0p)** Propuneți un mecanism prin care să trimiteți către un script, prin metoda POST, un obiect serializat.  
+

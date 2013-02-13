@@ -1,0 +1,17 @@
+Lab 04
+Learning HTML &amp; CSS
+Intro More Styles End
+
+Introduction
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec sapien dapibus ligula consequat volutpat quis ac nunc. Pellentesque dictum interdum iaculis. Phasellus ornare, ipsum lacinia rhoncus dictum...
+Donec id diam quis ipsum adipiscing volutpat sit amet non leo. Maecenas porttitor nibh libero, in tempor massa. Cras eleifend fermentum leo ac facilisis. Aenean eu diam magna. Maecenas malesuada, dui sed mollis mattis, nunc ligula pulvinar magna, vel posuere eros ipsum vel libero. Mauris rhoncus rhoncus massa quis hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+List item 01
+List item 02
+List item 03
+List item 04
+
+Mauris volutpat ultricies diam, eget porttitor nisl interdum vehicula. Duis eu tellus quis nisl pulvinar congue. Fusce volutpat, arcu et porttitor mollis, risus nunc malesuada sapien, ac pellentesque tortor leo rutrum felis. Curabitur vestibulum lorem nec diam porta viverra. Suspendisse sodales viverra nunc, mattis scelerisque nisl vehicula sit amet.
+
+Valid CSS & XHTML with no rights reserved.
