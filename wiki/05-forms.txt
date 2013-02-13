@@ -7,7 +7,7 @@
 == Formulare ==
 
 === Formulare în HTML ===
-Formularele sunt utile pentru a realiza schimburi de informații cu serverul, mai precis, pentru a trimite informații serverului.
+Formularele sunt utile pentru a trimite informații dinspre browser înspre server.
 Un exemplu de formular:
 
 <code html>
