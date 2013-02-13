@@ -86,7 +86,7 @@ Stilul content formateaza un tag HTML astfel: impune un padding de 50 de pixeli 
 Includerea unui fisier de stiluri .css intr-un document HTML se face prin tagul ''<link>''. Acesta trebuie introdus în interiorul tagului <head> al documentului HTML.
 
 <code html>
-<link rel="stylesheet" type="text/css" href="[nume-css].css" >
+<link rel="stylesheet" href="[nume-css].css" >
 </code>
 
 === Aplicarea stilurilor pe elemente. Selectori. ===
