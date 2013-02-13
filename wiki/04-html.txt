@@ -26,6 +26,21 @@ Tagurile HTML pot prezenta și o serie de atribute care îi definesc comportamen
 
 O obsevație importantă este că, deși nu toate elementele suportă aceleași atribute, ultimele două tipuri de atribute de bază (stiluri și evenimente) se regăsesc la toate elementele.
 
+
+=== Evoulția standardelor și implementărilor ===
+
+De la primele browsere și până astăzi, limbajul HTML și standardele din jurul lui sunt într-o continuă evoluție. Procesul este direcționat de organizația de standardizare [[http://www.w3.org/|W3C]] (World Wide Web Consirtium).
+
+În general schimbările păstrează compatibilitatea cu browsere și site-uri existente. Pentru un web developer este recomandată tehnica "graceful degradation", unde folosim feature-uri noi ale browserelor, dar scriem codul în așa fel încât browserele vechi afișează o pagină simplificată dar folosibilă. De exemplu, într-un tag ''<video>'' (care afișează un player video în browsere moderne) includem un mesaj text care va fi afișat de browserele care nu recunosc tag-ul ''<video>'':
+
+<code html>
+    <video>
+        <source src="somevideo.mp4" type="video/mp4">
+        Browserul tău nu poate afișa video :(
+    </video>
+</code>
+
+
 === DOCTYPE ===
 
 Un document HTML valid, trebuie să specifice (chiar la începutul documentului) un ''<!DOCTYPE>''. Acest tag specifică browser-ului cum trebuie interpretat documentul (ca HTML 4.0, ca XHTML, ca HTML5 etc.). Pentru a vedea mai multe tipuri de declarații puteți consulta [[http://www.w3.org/QA/2002/04/valid-dtd-list.html|această listă]].
