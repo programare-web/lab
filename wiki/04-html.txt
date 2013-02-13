@@ -264,6 +264,7 @@ Pentru Firefox folosim extensia "firebug": din meniul "tools" -> "web developer"
 
 === Referințe: ===
   * [[http://reference.sitepoint.com/css|Sitepoint CSS reference]]
+  * [[http://www.csszengarden.com/|css Zen Garden]]
 
 == Exercitii ==
 Descărcați {{:lab04.zip|această arhivă}} și plasați fișierele într-un director accesibil de către serverul vostru web.
