@@ -1,4 +1,4 @@
-= Laborator 08 - JavaScript =
+= Laborator 07 - JavaScript =
 
 **Obiective:**
 În urma parcurgerii acestui laborator studentul va:
