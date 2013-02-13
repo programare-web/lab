@@ -1,6 +1,6 @@
-= Laborator 04 - (X)HTML, CSS =
-* Obiective: 
-  * Înțelegerea structurii HTML și a diferențelor dintre HTML, xHTML și XML
+= Laborator 04 - HTML, CSS =
+* Obiective:
+  * Înțelegerea structurii HTML
   * Înțelegerea conceptelor fundamentale ale CSS
   * Înțelegerea sintaxei CSS și a modului de folosire a stilurilor în pagini web
 
@@ -10,7 +10,7 @@ HTML a apărut ca un răspuns la necesitatea de a descrie un set de informații 
 
 Este foarte important de reținut că markup-ul trebuie să definească un document **din punct de vedere semantic** și nu din punct de vedere al reprezentării vizuale.
 
-HTML este o instanță a metalimbajului SGML (la fel cum este XML, dar **fără** a fi un descendent al XML). Acest lucru înseamnă că în HTML vom întâlni multe elemente familiare din XML (tag-uri, atribute, structură nested etc.). Schema de mai jos ilustrează relația dintre SGML, HTML, XML și XHTML.
+HTML este o instanță a metalimbajului SGML (la fel cum este XML, dar **fără** a fi un descendent al XML). Acest lucru înseamnă că în HTML vom întâlni multe elemente familiare din XML (tag-uri, atribute, structură nested etc.).
 
 === Noțiuni generale despre HTML ===
 
@@ -30,43 +30,10 @@ O obsevație importantă este că, deși nu toate elementele suportă aceleași 
 
 Un document HTML valid, trebuie să specifice (chiar la începutul documentului) un ''<!DOCTYPE>''. Acest tag specifică browser-ului cum trebuie interpretat documentul (ca HTML 4.0, ca XHTML, ca HTML5 etc.). Pentru a vedea mai multe tipuri de declarații puteți consulta [[http://www.w3.org/QA/2002/04/valid-dtd-list.html|această listă]].
 
-În același timp, doctype-ul definește și modul în care documentul trebuie **validat**; validarea este o unealtă foarte folositoare pentru dezvoltatori pentru că poate prinde erori subtile în structura documentului și este o bază foarte bună de pornire în "relația" cu browserul (dacă un document se validează și browserul implementează corect standardele, comportamentul documentului în browser devine previzibil).
+De-a lungul evoluției limbajului HTML, doctype-ul a fost folosit pentru a specifica versiunea de HTML folosită. În ziua de astăzi este folosit pentru a transmite browser-ului să interpreteze pagina în "standards mode", adică cât mai aproape de standardele curente W3C. Este recomandată folosirea unui doctype minimal: ``<!DOCTYPE html>``.
 
-Ca validator, este recomandat să folosiți [[http://validator.w3.org/|cel oferit de w3c]] (organizația responsabilă cu producerea diverselor standarde pentru web).
-{{ :sgml-xml-html.png |Relația dintre HTML, XML, XHTML și SGML}}
+Pentru verificarea structurii unui document HTML este recomandat să folosiți [[http://validator.w3.org/|cel oferit de W3C]].
 
-
-=== XHTML ===
-
-Explozia industriei web și "lejeritatea" cu care browserele parseaza și interpretează codul HTML (în multe situații diferit), și faptul că o pagina incorectă va fi totuși afișată (în unele cazuri acceptabil sau chiar corect), au condus la o situatie (actuală) în care majoritatea paginilor web conțin erori.
-
-XHTML este o incercare de a contracara acest fenomen. Spre deosebire de ultimele versiuni HTML, XHTML ca si standard-de-limbaj are reguli stricte.
-Enumeram cateva dintre ele:
-* taguri ca ''<b>'',''<i>'',''<font>'' nu mai sunt admise, pentru că definesc layout și nu semantica documentului
-* tagurile trebuie sa fie intotdeauna inchise; tagurile simple trebuie inchise cu ''/>'' (spre exemplu, tagul ''<br>'' din HTML 4.0 este valid scris in XHTML astfel: ''<br />'' )
-* toate tagurile sau atributele acestora trebuie scrise lowercase iar atributele trebuie să aibă valorile prinse între "" (tagurile ''<A HREF=...>'' nu sunt valide in XHTML; varianta validă este ''<a href="...">'' ).
-
-=== HTML 5 ===
-
-HTML5 este urmatorul standard propus pentru a inlocui HTML 4.01 si XHTML 1.0. Scopul sau este de a reduce nevoia de aplicatii bazate pe plug-in-uri precum Adobe Flash, Microsoft Silverlight, Apache Pivot, si Sun JavaFX.
-
-Acest standard este inca in progres de dezvoltare insa unele parti au fost deja implementate la nivel de browser.
-Diferentele majore fata de versiunea anterioara sunt:
-
-    * Reguli noi de parsare axate pe flexibilitate și compatibilitate, ce nu mai sunt bazate pe SGML
-    * Abilitatea de a folosi inline SVG și MathML în text/html
-    * Elemente noi – ''article, aside, audio, canvas, command, details, datalist, dialog, embed, figure, footer, header, hgroup, keygen, mark, meter, nav, progress, output, rp, rt, ruby, section, source, time, video''
-    * Tipuri noi de controale pentru formulare – dates and times, email, url, search
-    * Atribute noi – ping (pe ''a'' și ''area''), charset (pe ''meta''), ''async'' (pe ''script'')
-    * Atribute globale (ce pot fi aplicate pentru fiecare element in parte) – ''id'', ''tabindex'', ''hidden'', ''data-*'' (custom data attributes)
-    * Formulare vor primi suport pentru metodele PUT și DELETE nu doar pentru GET și POST
-    * Se renunță la elementele deprecated – ''center'', ''font'', ''frameset'', ''strike'' etc.
-
-==== Error handling ====
-
-Un browser HTML5 (''text/html'') va fi flexibil in parsarea sintaxei și va corecta eventualele erori. HTML5 este creat astfel incat vechile browsere să ignore construcțiile proaspăt introduse. În contrast cu HTML 4.01, specificația HTML5 oferă reguli detaliate pentru lexing și parsare, cu scopul unificării comportamentului diferitelor browsere în cazul sintaxei incorecte.
-
-Gasiti aici [[http://html5demos.com/|câteva exemple]] ale forțelor proaspete aduse de HTML5.
 
 === HTML și PHP ===
 
